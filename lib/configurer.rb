@@ -7,9 +7,9 @@ module Configurer
 
   ::WORLDWIDE = HashMM.new
 
-  def config *syms
+  def config *syms, &blk
     return @configurer if syms.empty?
-    configurer = @configurer ||= HashMM.new{|h,k| WORLDWIDE[k] }
+    configurer = @configurer ||= HashMM.new{|h,k| WORLDWIDE[k] || blk }
     syms.each do |sym|
       meth = proc{ configurer[sym].call }
       define_method(sym, &meth)
