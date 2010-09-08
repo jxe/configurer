@@ -1,9 +1,9 @@
-= configgy
+= configurer
 
   # to use in your class
 
   class Foo
-    extend Configgy; config :redis
+    extend Configurer; config :redis
 
     def bar
       redis.set "foo", "bar"

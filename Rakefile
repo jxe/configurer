@@ -4,10 +4,10 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "configgy"
+    gem.name = "configurer"
     gem.summary = %Q{a new take on ruby cross-class configuration}
     gem.email = "joe@citizenlogistics.com"
-    gem.homepage = "http://github.com/jxe/configgy"
+    gem.homepage = "http://github.com/jxe/configurer"
     gem.authors = ["Joe Edelman"]
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end

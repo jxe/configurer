@@ -6,7 +6,7 @@ class TestConfigable < Test::Unit::TestCase
     THING = []
 
     class Foo
-      extend Configgy; config :bar
+      extend Configurer; config :bar
       def try
         raise unless bar == :good
       end
