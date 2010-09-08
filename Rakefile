@@ -4,13 +4,11 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "configable"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
-    gem.email = "joe.edelman@gmail.com"
-    gem.homepage = "http://github.com/jxe/configable"
+    gem.name = "configgy"
+    gem.summary = %Q{a new take on ruby cross-class configuration}
+    gem.email = "joe@citizenlogistics.com"
+    gem.homepage = "http://github.com/jxe/configgy"
     gem.authors = ["Joe Edelman"]
-    gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
