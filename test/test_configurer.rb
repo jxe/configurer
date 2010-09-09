@@ -13,7 +13,7 @@ class TestConfigable < Test::Unit::TestCase
     end
 
     WORLDWIDE.bar { THING.push :hi; :good }
-    assert WORLDWIDE[:bar]
+    assert WORLDWIDE.hash[:bar]
 
     Foo.new.try
     assert_equal :hi, THING.first
