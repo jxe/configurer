@@ -2,29 +2,32 @@
 
 module Configurer
   def eigenclass; (class<<self;self;end); end
+  CONFIGS = {}
 
-  class Config < Array
-    def method_missing(meth, *args, &blk); first[meth] = blk; end
-    def mod; @module ||= Module.new; end
+  class Config < Module
+    attr_accessor :arr
+    def method_missing(sym, &blk); arr.first[sym] = blk; end
     def []=(sym, blk)
-      me = self
-      last[sym] = blk
-      mod.send(:define_method, sym) do
+      (arr = self.arr).last[sym] = blk
+      define_method sym do
         frame = Module===self ? self : self.class
-        frame.instance_exec(&me.inject(nil){ |m, e| m || e[sym] })
+        blk   = arr.inject(nil){ |m, e| m || e[sym] }
+        frame.instance_exec(&blk)
       end
     end
   end
 
-  ::WORLDWIDE = Config.new([{}])
-  CONFIGS = Hash.new{ |h,k| h[k] = Config.new([{},::WORLDWIDE.first,{}]) }
+  ::WORLDWIDE = Config.new
+  ::WORLDWIDE.arr = [{}]
 
   def config sym = nil, &blk
     !sym and CONFIGS[self] or CONFIGS[self][sym] = blk
   end
 
   def config_from klass
-    [self, eigenclass].each{ |x| x.send :include, CONFIGS[klass].mod }
+    CONFIGS[klass]     ||= Config.new
+    CONFIGS[klass].arr ||= [{}]+::WORLDWIDE.arr+[{}]
+    [self, eigenclass].each{ |x| x.send :include, CONFIGS[klass] }
   end
 
   def self.extend_object klass
