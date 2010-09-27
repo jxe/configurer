@@ -1,20 +1,33 @@
 # a new take on ruby cross-class configuration
 
 module Configurer
-  class Hashwrapper < Struct.new(:hash)
-    def method_missing(meth, *args, &blk); hash[meth] = blk; end
+  def eigenclass; (class<<self;self;end); end
+
+  class Config < Array
+    def method_missing(meth, *args, &blk); first[meth] = blk; end
+    def mod; @module ||= Module.new; end
+    def []=(sym, blk)
+      me = self
+      last[sym] = blk
+      mod.send(:define_method, sym) do
+        frame = Module===self ? self : self.class
+        frame.instance_exec(&me.inject(nil){ |m, e| m || e[sym] })
+      end
+    end
   end
 
-  ::WORLDWIDE = Hashwrapper.new({})
+  ::WORLDWIDE = Config.new([{}])
+  CONFIGS = Hash.new{ |h,k| h[k] = Config.new([{},::WORLDWIDE.first,{}]) }
 
-  def config *syms, &blk
-    return Hashwrapper.new(@class_overides) if syms.empty?
-    @class_defaults ||= {}
-    configs = @class_overides ||= Hash.new{|h,k| ::WORLDWIDE.hash[k] || @class_defaults[k]}
-    syms.each do |sym|
-      @class_defaults[sym] = blk if blk
-      define_method(sym){ self.class.instance_exec &configs[sym] }
-      (class << self;self;end).send(:define_method, sym){ instance_exec &configs[sym] }
-    end
+  def config sym = nil, &blk
+    !sym and CONFIGS[self] or CONFIGS[self][sym] = blk
+  end
+
+  def config_from klass
+    [self, eigenclass].each{ |x| x.send :include, CONFIGS[klass].mod }
+  end
+
+  def self.extend_object klass
+    super; klass.config_from klass
   end
 end

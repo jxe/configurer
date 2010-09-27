@@ -2,7 +2,6 @@ require 'helper'
 
 class TestConfigable < Test::Unit::TestCase
   should "set a global config" do
-
     THING = []
 
     class Foo
@@ -47,6 +46,20 @@ class TestConfigable < Test::Unit::TestCase
     assert_equal 'A', A.new.f
     assert_equal 'B', B.f
     assert_equal 'B', B.new.f
+  end
+
+  should "be transitive via included modules" do
+    module ::C
+      extend Configurer
+      config :f do "A"; end
+      config :g do f; end
+    end
+    class ::D
+      extend Configurer
+      config_from ::C
+    end
+
+    assert_equal 'A', D.new.g
   end
 
 end
