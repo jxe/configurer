@@ -3,7 +3,8 @@
   # to use in your class
 
   class Foo
-    extend Configurer; config :redis
+    extend Configurer
+    config :redis do Redis.new end
 
     def bar
       redis.set "foo", "bar"
@@ -13,12 +14,12 @@
 
   # to set globally
 
-  WORLDWIDE.redis { }
+  WORLDWIDE.redis { Redis.new($options) }
 
 
   # or to set just for foo
 
-  Foo.config.redis { }
+  Foo.config.redis { Redis.new($local_options) }
 
 
 
