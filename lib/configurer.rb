@@ -12,7 +12,7 @@ module Configurer
       define_method sym do
         frame = Module===self ? self : self.class
         blk   = arr.inject(nil){ |m, e| m || e[sym] }
-        frame.instance_exec(&blk)
+        frame.instance_eval(&blk)
       end
     end
   end

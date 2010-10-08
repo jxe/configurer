@@ -53,13 +53,16 @@ class TestConfigable < Test::Unit::TestCase
       extend Configurer
       config :f do "A"; end
       config :g do f; end
+      config :h do g; end
     end
     class ::D
       extend Configurer
+      include ::C
       config_from ::C
     end
 
-    assert_equal 'A', D.new.g
+    assert_equal 'A', D.new.h
+    assert_equal 'A', D.h
   end
 
 end
